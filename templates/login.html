@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LOGIN</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, #024873, #68bff5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .caixa_de_login {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+        }
+        
+        .caixa_de_login img {
+            max-width: 200px; /* Ajuste o tamanho conforme necessário */
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color:#024873
+        }
+
+        .caixa_de_login h2 {
+            margin-bottom: 20px;
+        }
+        
+        .caixa_de_login form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .caixa_de_login label {
+            display: block;
+            margin-bottom: 6px;
+            text-align: left;
+        }
+        
+        .caixa_de_login input[type="text"],
+        .caixa_de_login input[type="password"],
+        .caixa_de_login button {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: calc(100% - 22px); /* Ajuste para compensar o padding e a borda */
+        }
+        
+        .caixa_de_login button {
+            background-color: #024873;
+            color: white;
+            border: none;   
+            cursor: pointer;
+            width: 100%
+        }
+        
+        .caixa_de_login button:hover {
+            background-color: #0c74b4;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        ul li {
+            background-color: #f1f1f1;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 4px;
+        }
+    </style>    
+</head>
+<body>
+    <div class="caixa_de_login"> 
+        <img src="static/uploads/logo.png" alt="logo">
+        <h2> <strong>LOGIN</strong></h2>
+        <form method="post">
+            <label for="username"> <strong>Usuário:</strong></label>
+            <input type="text" name="username" required>
+            <label for="password"><strong>Senha:</strong></label>
+            <input type="password" name="password" required>
+            <button type="submit"><strong>ACESSAR</strong></button>
+        </form>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

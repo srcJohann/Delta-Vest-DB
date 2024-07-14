@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ADICIONAR QUESTÃO</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, #024873, #68bff5);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .caixa_de_adicionar {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            padding-bottom: 80px; /* Espaço extra para os botões */
+        }
+
+        .caixa_de_adicionar img {
+            max-width: 200px; /* Ajuste o tamanho conforme necessário */
+            margin-bottom: 20px;
+        }
+
+        .caixa_de_adicionar h2 {
+            margin-bottom: 20px;
+            color: #024873;
+            text-transform: uppercase;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        textarea, input[type="file"], input[type="number"], input[type="text"], select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        a.voltar {
+            text-align: center;
+            text-decoration: none;
+            background-color: #008FD0;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            position: absolute;
+            left: 20px;
+            bottom: 20px;
+        }
+
+        a.voltar:hover {
+            background-color: #54c5fa;
+        }
+    </style>
+    <script src="https://cdn.ckeditor.com/4.22.0/standard/ckeditor.js"></script> 
+</head>
+<body>
+    <div class="caixa_de_adicionar">
+        <img src="static/uploads/logo.png" alt="logo">
+        <h2>Adicionar Nova Questão</h2>
+        <form action="{{ url_for('add_question') }}" method="post" enctype="multipart/form-data">
+            <label for="enunciado">Enunciado:</label>
+            <textarea id="enunciado" name="enunciado" rows="4" required></textarea>
+            
+            <label for="imagem">Imagem:</label>
+            <input type="file" id="imagem" name="imagem">
+            
+            <label for="ano">Ano:</label>
+            <input type="number" id="ano" name="ano" min="1" max="12" required>
+            
+            <label for="dificuldade">Dificuldade:</label>
+            <select id="dificuldade" name="dificuldade" required>
+                <option value="1">Fácil</option>
+                <option value="2">Médio</option>
+                <option value="3">Difícil</option>
+            </select>
+            
+            <label for="disciplina">Disciplina:</label>
+            <input type="text" id="disciplina" name="disciplina" required>
+            
+            <label for="conteudo">Conteúdo:</label>
+            <input type="text" id="conteudo" name="conteudo" required>
+            
+            <label for="gabarito">Gabarito:</label>
+            <textarea id="gabarito" name="gabarito" rows="4" required></textarea>
+            
+            <input type="submit" value="Adicionar Questão">
+        </form>
+        <a href="{{ url_for('index') }}" class="voltar">Voltar à Página Principal</a>
+    </div>
+    <script>
+        CKEDITOR.replace('enunciado');
+        CKEDITOR.replace('gabarito');
+    </script>
+</body>
+</html>

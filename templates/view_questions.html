@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VISUALIZAR QUESTÕES</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            max-width: 230px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #024873;
+            text-transform: uppercase;
+            font-size: 2em;
+            letter-spacing: 1px;
+        }
+
+        .filter-form {
+            margin-bottom: 20px;
+            text-align: center;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filter-form label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .filter-form select, .filter-form input[type="submit"] {
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 150px; /* Largura fixa para as caixas de seleção */
+        }
+
+        .filter-form input[type="submit"] {
+            background-color: #ffc400;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .filter-form input[type="submit"]:hover {
+            background-color: #f1d67d;
+        }
+
+        .clear-filters {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .clear-filters:hover {
+            background-color: #e57373;
+        }
+
+        .table-container {
+            max-height: 800px;
+            overflow-y: auto;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #024873;
+            color: white;
+        }
+
+        .id-col {
+            max-width: 1px; /* Tamanho reduzido para ID */
+        }
+
+        .enunciado {
+            max-width: 500px; /* Largura do enunciado aumentada */
+            overflow-wrap: break-word; /* Permite que o texto quebre */
+        }
+
+        td img {
+            max-width: 100px;
+            max-height: 100px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        td a, .mostrar-resposta {
+            display: inline-block;
+            margin: 0 5px;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        td a {
+            background-color: #ffc400;
+            color: white;
+        }
+
+        td a:hover {
+            background-color: #f1d67d;
+        }
+
+        td a.deletar {
+            background-color: red;
+            color: white;
+        }
+
+        td a.deletar:hover {
+            background-color: #ff8080;
+        }
+
+        .gabarito {
+            display: none; /* Inicialmente escondido */
+        }
+
+        .mostrar-resposta {
+            background-color: #008FD0;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .mostrar-resposta:hover {
+            background-color: #54c5fa;
+        }
+
+        .voltar {
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            padding: 10px 15px;
+            background-color: #008FD0;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .voltar:hover {
+            background-color: #31afe9;
+        }
+    </style>
+    <script>
+        function mostrarGabarito(button, resposta) {
+            const gabarito = document.getElementById(resposta);
+            gabarito.style.display = gabarito.style.display === 'none' ? 'block' : 'none';
+            button.textContent = gabarito.style.display === 'block' ? 'Esconder Resposta' : 'Mostrar Resposta';
+        }
+
+        function updateFilters() {
+            const disciplina = document.getElementById('disciplina').value;
+            const ano = document.getElementById('ano').value;
+            const dificuldade = document.getElementById('dificuldade').value;
+
+            fetch(`/view_questions?disciplina=${disciplina}&ano=${ano}&dificuldade=${dificuldade}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const conteudoSelect = document.getElementById('conteudo');
+                conteudoSelect.innerHTML = '<option value="">Todos</option>';
+                data.conteudos.forEach(conteudo => {
+                    const option = document.createElement('option');
+                    option.value = conteudo;
+                    option.textContent = conteudo;
+                    conteudoSelect.appendChild(option);
+                });
+
+                const anoSelect = document.getElementById('ano');
+                anoSelect.innerHTML = '<option value="">Todos</option>';
+                data.anos.forEach(year => {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    if (year == ano) option.selected = true;
+                    anoSelect.appendChild(option);
+                });
+
+                const dificuldadeSelect = document.getElementById('dificuldade');
+                dificuldadeSelect.innerHTML = '<option value="">Todas</option>';
+                data.dificuldades.forEach(dif => {
+                    const option = document.createElement('option');
+                    option.value = dif;
+                    option.textContent = dif;
+                    if (dif == dificuldade) option.selected = true;
+                    dificuldadeSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Erro ao atualizar os filtros:', error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <img src="static/uploads/logo.png" alt="logo" class="logo">
+    <h2>Visualizar Questões</h2>
+
+    <div class="filter-form">
+        <a href="{{ url_for('index') }}" class="voltar">Voltar à Página Principal</a>
+        <form action="{{ url_for('view_questions') }}" method="GET">
+            <label for="disciplina">Disciplina:</label>
+            <select id="disciplina" name="disciplina" onchange="updateFilters()">
+                <option value="">Todas</option>
+                {% for disc in disciplinas %}
+                    <option value="{{ disc[0] }}" {% if selected_disciplina == disc[0] %}selected{% endif %}>{{ disc[0] }}</option>
+                {% endfor %}
+            </select>
+            <label for="ano">Ano:</label>
+            <select id="ano" name="ano" onchange="updateFilters()">
+                <option value="">Todos</option>
+                {% for year in anos %}
+                    <option value="{{ year[0] }}" {% if selected_ano == year[0] %}selected{% endif %}>{{ year[0] }}</option>
+                {% endfor %}
+            </select>
+            <label for="dificuldade">Dificuldade:</label>
+            <select id="dificuldade" name="dificuldade" onchange="updateFilters()">
+                <option value="">Todas</option>
+                {% for dif in dificuldades %}
+                    <option value="{{ dif[0] }}" {% if selected_dificuldade == dif[0] %}selected{% endif %}>{{ dif[0] }}</option>
+                {% endfor %}
+            </select>
+            <label for="conteudo">Conteúdo:</label>
+            <select id="conteudo" name="conteudo">
+                <option value="">Todos</option>
+                {% for cont in conteudos %}
+                    <option value="{{ cont[0] }}" {% if selected_conteudo == cont[0] %}selected{% endif %}>{{ cont[0] }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Filtrar">
+        </form>
+        <button class="clear-filters" onclick="window.location.href='{{ url_for('view_questions') }}'">Limpar Filtro</button>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <tr>
+                <th class="id-col">ID</th>
+                <th class="enunciado">Enunciado</th>
+                <th>Imagem</th>
+                <th class="small">Dificuldade</th>
+                <th class="small">Ano</th>
+                <th class="small">Disciplina</th>
+                <th class="small">Conteúdo</th>
+                <th>Ações</th>
+            </tr>
+            {% for question in questions %}
+            <tr>
+                <td>{{ question[0] }}</td>
+                <td class="enunciado">
+                    {{ question[1] | safe }}
+                    <br>
+                    <button class="mostrar-resposta" onclick="mostrarGabarito(this, 'gabarito-{{ question[0] }}')">Mostrar Resposta</button>
+                    <div id="gabarito-{{ question[0] }}" class="gabarito">
+                        <div>{{ question[7] | safe }}</div>
+                    </div>
+                </td>
+                <td>
+                    {% if question[2] %}
+                        <img src="{{ url_for('static', filename='uploads/' + question[2].split('/')[-1]) }}" alt="Imagem da questão">
+                    {% else %}
+                        Nenhuma imagem
+                    {% endif %}
+                </td>
+                <td class="small">{{ question[4] }}</td>
+                <td class="small">{{ question[3] }}</td>
+                <td class="small">{{ question[5] }}</td>
+                <td class="small">{{ question[6] }}</td>
+                <td>
+                    {% if session['role'] == 'editor' %}
+                        <a href="{{ url_for('edit_question', id=question[0]) }}"> <strong>Editar</strong> </a>
+                        <a href="{{ url_for('delete_question', id=question[0]) }}" class="deletar" onclick="return confirm('Tem certeza que deseja deletar esta questão?');"> <strong>Deletar</strong></a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

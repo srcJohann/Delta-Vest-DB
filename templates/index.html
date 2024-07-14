@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Página Principal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, #024873, #68bff5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .conteudo {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+        }
+        
+        .conteudo img {
+            max-width: 200px; /* Ajuste o tamanho conforme necessário */
+            margin-bottom: 20px;
+        }
+        
+        .conteudo h2 {
+            margin-bottom: 20px;
+        }
+        
+        .conteudo p {
+            margin-bottom: 20px;
+        }
+        
+        .conteudo a {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #024873;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .conteudo a:hover {
+            background-color: #0c74b4;
+        }
+        
+        .conteudo a.logout {
+            background-color: rgb(175, 31, 31);
+            color: white
+        }
+        
+        .conteudo a.logout:hover {
+            background-color: rgb(206, 89, 89);;
+        }
+    </style>    
+</head>
+<body>
+    <div class="conteudo"> 
+        <img src="static/uploads/logo.png" alt="logo">
+        <h2>Bem-vindo, {{ session['username'] }}</h2>
+        <p>Role: {{ session['role'] }}</p>
+        <a href="{{ url_for('view_questions') }}"> Visualizar Questões</a>
+        {% if session['role'] == 'editor' %}
+            <a href="{{ url_for('add_question') }}"> Adicionar Questões </a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}" class="logout"> <strong>SAIR</strong></a>
+    </div>
+</body>
+</html>
